@@ -93,13 +93,10 @@ def rank_customers_by_spending():
         with conn.cursor() as cur:
             cur.execute("""
 SELECT 
-    c.customer_id,
-    c.full_name,
-    SUM(o.total_amount) AS total_spent,
-    RANK() OVER (ORDER BY SUM(o.total_amount) DESC) AS spending_rank
-FROM customers c
-JOIN orders o ON c.customer_id = o.customer_id
-GROUP BY c.customer_id, c.full_name;
+    customer_id,
+    total_amount,
+    RANK() OVER (ORDER BY total_amount DESC) AS rank_by_spend
+FROM orders;
                         """)
             return cur.fetchall()
 
@@ -109,7 +106,15 @@ GROUP BY c.customer_id, c.full_name;
 def running_total_per_customer():
     with connect_db() as conn:
         with conn.cursor() as cur:
-            cur.execute("""""")
+            cur.execute("""
+SELECT 
+    customer_id,
+    order_id,
+    order_date,
+    total_amount,
+    SUM(total_amount) OVER (PARTITION BY customer_id ORDER BY order_date) AS running_total
+FROM orders;
+                        """)
             return cur.fetchall()
 
 # 11- Elektronik ve Beyaz Eşya ürünleri (UNION)
