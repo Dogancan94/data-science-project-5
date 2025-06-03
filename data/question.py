@@ -106,15 +106,7 @@ FROM orders;
 def running_total_per_customer():
     with connect_db() as conn:
         with conn.cursor() as cur:
-            cur.execute("""
-SELECT 
-    customer_id,
-    order_id,
-    order_date,
-    total_amount,
-    SUM(total_amount) OVER (PARTITION BY customer_id ORDER BY order_date) AS running_total
-FROM orders;
-                        """)
+            cur.execute("""""")
             return cur.fetchall()
 
 # 11- Elektronik ve Beyaz Eşya ürünleri (UNION)
